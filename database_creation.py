@@ -2,7 +2,7 @@ import sqlite3
 import json
 from datetime import datetime
 
-time_period = '2009-09' # the time of collection of data
+time_period = '2009-09' # the data being used is from september 2009.
 global transaction = []
 
 connection = sqlite3.connect('{}.db'.format(time_period))
