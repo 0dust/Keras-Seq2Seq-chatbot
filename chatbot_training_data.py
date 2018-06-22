@@ -17,20 +17,20 @@ for database in database_list:
         rows_pulled = len(data)
         if not separated_test:
             with open("test_data_context.from",'a',encoding = 'utf8') as f:
-                for content in data['parent'].values:
-                    f.write(content + '\n')
+                for text in data['parent'].values:
+                    f.write(text + '\n')
             with open("test_data_reply.to",'a',encoding = 'utf8') as f:
                 
-                for content in data['comment'].values:
-                    f.write(content + '\n')
+                for text in data['comment'].values:
+                    f.write(text + '\n')
 
             separated_test = True
         else:
             with open("train_data_context.from",'a',encoding = 'utf8') as f:
-                for content in data['parent'].values:
-                    f.write(content + '\n')
+                for text in data['parent'].values:
+                    f.write(text + '\n')
             with open("train_data_reply.to",'a',encoding = 'utf8') as f:
-                for content in data['comment'].values:
-                    f.write(content + '\n')
+                for text in data['comment'].values:
+                    f.write(text + '\n')
         counter +=1
-    print(counter*limit,'rows processed','from',database)
+    print(counter*limit,'rows processed from',database)
