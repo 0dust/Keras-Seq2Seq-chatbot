@@ -2,17 +2,17 @@ import sqlite3
 import json
 from datetime import datetime
 
-time_period = '2009-09' # the data being used is from september 2009.
+database_name = '2009-09' # the data being used is from september 2009.
 global transaction = []
 
-connection = sqlite3.connect('{}.db'.format(time_period))
+connection = sqlite3.connect('{}.db'.format(database_name))
 c = connection.cursor()
 
 
 # database table creation
 def create_table():
     c.execute(
-        """CREATE TABLE IF NOT EXISTS reddit_database(parent_id TEXT PRIMARY KEY,
+        """CREATE TABLE IF NOT EXISTS reddit_data_table(parent_id TEXT PRIMARY KEY,
     comment_id TEXT UNIQUE,
     parent TEXT,
     comment TEXT,
@@ -35,7 +35,7 @@ def format_data(data):
 #return score of the entry with  parent_id = pid
 def find_existing_score(pid):
     try:
-        sql = "SELECT score from reddit_database where parent_id = '{}' limit 1".format(pid)
+        sql = "SELECT score from reddit_data_table where parent_id = '{}' limit 1".format(pid)
         c.execute(sql)
         result = c.fetchone()
         if result != None:
@@ -66,7 +66,7 @@ def transactions_in_bulk(sql):
 
 def sql_insert_replace_comment(commentid,parentid,parent,comment,subreddit,time,score):
     try:
-        sql = """update reddit_database set parent_id = ?, comment_id= ?,parent = ?,
+        sql = """update reddit_data_table set parent_id = ?, comment_id= ?,parent = ?,
         comment = ?,subreddit = ?,unix=?,score=? where
         parent_id = ?; """.format(parentid,commentid,parent,comment,subreddit,int(time),score,parentid)
         
@@ -80,7 +80,7 @@ def sql_insert_replace_comment(commentid,parentid,parent,comment,subreddit,time,
 
 def sql_insert_has_parent(commentid,parentid,parent,comment,subreddit,time,score):
     try:
-        sql = """insert into parent_reply (parent_id, comment_id,parent,
+        sql = """insert into reddit_data_table (parent_id, comment_id,parent,
         comment,subreddit,unix,score) values
         ("{}","{}","{}","{}","{}",{},{}); """.format(parentid,commentid,parent,comment,subreddit,int(time),score)
         transactions_in_bulk(sql)
@@ -92,7 +92,7 @@ def sql_insert_has_parent(commentid,parentid,parent,comment,subreddit,time,score
 
 def sql_insert_no_parent(commentid,parentid,comment,subreddit,time,score):
     try:
-        sql = """insert into parent_reply (parent_id, comment_id,
+        sql = """insert into reddit_data_table (parent_id, comment_id,
         comment,subreddit,unix,score) values
         ("{}","{}","{}","{}",{},{}); """.format(parentid,commentid,comment,subreddit,int(time),score)
         transactions_in_bulk(sql)
@@ -122,7 +122,7 @@ def acceptable(data):
 #hence its comment_id = parent_id of child comment.         
 def find_parent(pid):
     try:
-        sql = "SELECT comment FROM reddit_database WHERE comment_id = '{}' LIMIT 1".format(pid)
+        sql = "SELECT comment FROM reddit_data_table WHERE comment_id = '{}' LIMIT 1".format(pid)
         c.execute(sql)
         result = c.fetchone()
         if result != None:
@@ -141,8 +141,7 @@ if __name__ == "__main__":
     row_count = 0                 #count number of rows read.
     paired_rows_count = 0          #count number of comments which got their parent from database using find_parent.
     
-    with open("projects/RC_2009/RC_2009",buffering = 1000) as f:
-
+    with open("projects/RC_2009/RC_2009",buffering = 1000) as f:  #RC_2009 contains json data from reddit
         for row in f:
 
             row = json.loads(row)
