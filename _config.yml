@@ -1,1 +1,10 @@
-theme: jekyll-theme-tactile
+# basic options
+title: Keras Seq2Seq Chatbot
+author: 0dust
+email: himanshutripathi366@gmail.com
+description: A wonderful site
+github_username:  0dust
+
+# Build settings
+markdown: kramdown
+theme: minima
